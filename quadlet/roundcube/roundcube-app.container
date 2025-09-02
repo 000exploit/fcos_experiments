@@ -16,3 +16,4 @@ Restart=always
 
 [Install]
 WantedBy=roundcube-pod.service
+# vim: set filetype=systemd :

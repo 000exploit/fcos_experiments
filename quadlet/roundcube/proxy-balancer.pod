@@ -8,3 +8,4 @@ PodName=proxy-balancer-pod
 
 [Install]
 WantedBy=default.target
+# vim: set filetype=systemd :

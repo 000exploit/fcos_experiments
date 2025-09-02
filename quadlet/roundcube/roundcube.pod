@@ -10,3 +10,4 @@ PodName=roundcube-pod
 
 [Install]
 WantedBy=default.target
+# vim: set filetype=systemd :

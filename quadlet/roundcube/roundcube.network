@@ -16,3 +16,4 @@ Restart=on-failure
 
 [Install]
 WantedBy=roundcube-pod.target
+# vim: set filetype=systemd :
