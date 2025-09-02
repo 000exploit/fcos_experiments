@@ -1,0 +1,18 @@
+[Unit]
+Description=Roundcube Database
+RequiredBy=roundcube-app.service
+
+[Container]
+ContainerName=roundcube-db
+Environment=POSTGRES_PASSWORD_FILE=/run/secrets/db_pass
+EnvironmentFile=/etc/sysconfig/roundcube-env
+Image=docker.io/library/postgres:17
+Pod=roundcube.pod
+Secret=db_pass
+Volume=roundcube-db:/var/lib/postgresql/data:Z
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=roundcube-pod.service

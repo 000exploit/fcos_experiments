@@ -1,0 +1,18 @@
+[Unit]
+Description=Roundcube private network
+Before=roundcube-app.service roundcube-db.service
+
+[Network]
+Driver=bridge
+Gateway=10.90.0.3
+Internal=true
+IPRange=10.90.0.128/25
+NetworkDeleteOnStop=true
+NetworkName=roundcube
+Subnet=10.90.0.0/16
+
+[Service]
+Restart=on-failure
+
+[Install]
+WantedBy=roundcube-pod.target

@@ -1,0 +1,12 @@
+[Unit]
+Description=Roundcube Pod
+Requires=roundcube-network.service
+
+[Pod]
+Network=roundcube
+NetworkAlias=roundcube.pod
+PodmanArgs=--cpus 4 --memory 4g
+PodName=roundcube-pod
+
+[Install]
+WantedBy=default.target

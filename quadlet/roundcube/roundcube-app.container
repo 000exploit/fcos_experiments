@@ -1,0 +1,18 @@
+[Unit]
+Description=Roundcube Web
+After=roundcube-db.service
+
+[Container]
+ContainerName=roundcube-app
+Environment=ROUNDCUBEMAIL_DB_PASSWORD_FILE=/run/secrets/db_pass
+EnvironmentFile=/etc/sysconfig/roundcube-env
+Image=docker.io/roundcube/roundcubemail:latest
+Pod=roundcube.pod
+Secret=db_pass
+Volume=/etc/sysconfig/roundcube-php:/var/roundcube/config:ro
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=roundcube-pod.service

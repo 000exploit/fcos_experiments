@@ -70,125 +70,38 @@ storage:
     - path: /etc/containers/systemd/roundcube.network
       mode: 0644
       contents:
-        inline: |
-          [Unit]
-          Description=Roundcube private network
-          Before=roundcube-app.service roundcube-db.service
+        local: quadlet/roundcube/roundcube.network
           
-          [Network]
-          Driver=bridge
-          Gateway=10.90.0.3
-          Internal=true
-          IPRange=10.90.0.128/25
-          NetworkDeleteOnStop=true
-          NetworkName=roundcube
-          Subnet=10.90.0.0/16
-          
-          [Service]
-          Restart=on-failure
-
-          [Install]
-          WantedBy=roundcube-pod.target
 
     - path: /etc/containers/systemd/roundcube.pod
       mode: 0644
       contents:
-        inline: |
-          [Unit]
-          Description=Roundcube Pod
-          Requires=roundcube-network.service
-
-          [Pod]
-          Network=roundcube
-          NetworkAlias=roundcube.pod
-          PodmanArgs=--cpus 4 --memory 4g
-          PodName=roundcube-pod
-
-          [Install]
-          WantedBy=default.target
+        local: quadlet/roundcube/roundcube.pod
+          
 
     - path: /etc/containers/systemd/roundcube-db.container
       mode: 0600
       contents:
-        inline: |
-          [Unit]
-          Description=Roundcube Database
-          RequiredBy=roundcube-app.service
-
-          [Container]
-          ContainerName=roundcube-db
-          Environment=POSTGRES_PASSWORD_FILE=/run/secrets/db_pass
-          EnvironmentFile=/etc/sysconfig/roundcube-env
-          Image=docker.io/library/postgres:17
-          Pod=roundcube.pod
-          Secret=db_pass
-          Volume=roundcube-db:/var/lib/postgresql/data:Z
-
-          [Service]
-          Restart=always
-
-          [Install]
-          WantedBy=roundcube-pod.service
+        local: quadlet/roundcube/roundcube-db.container
+          
 
     - path: /etc/containers/systemd/roundcube-app.container
       mode: 0600
       contents:
-        inline: |
-          [Unit]
-          Description=Roundcube Web
-          After=roundcube-db.service
-
-          [Container]
-          ContainerName=roundcube-app
-          Environment=ROUNDCUBEMAIL_DB_PASSWORD_FILE=/run/secrets/db_pass
-          EnvironmentFile=/etc/sysconfig/roundcube-env
-          Image=docker.io/roundcube/roundcubemail:latest
-          Pod=roundcube.pod
-          Secret=db_pass
-          Volume=/etc/sysconfig/roundcube-php:/var/roundcube/config:ro
-
-          [Service]
-          Restart=always
-
-          [Install]
-          WantedBy=roundcube-pod.service
+        local: quadlet/roundcube/roundcube-app.container
+          
 
     - path: /etc/containers/systemd/proxy-balancer.pod
       mode: 0644
       contents:
-        inline: |
-          [Unit]
-          Description=Reverse proxy and balancer pod
-
-          [Pod]
-          Network=host
-          PodmanArgs=--cpus 1 --memory 1g
-          PodName=proxy-balancer-pod
-
-          [Install]
-          WantedBy=default.target
+        local: quadlet/roundcube/proxy-balancer.pod
+          
 
     - path: /etc/containers/systemd/nginx.container
       mode: 0600
       contents:
-        inline: |
-          [Unit]
-          Description=Nginx container
-
-          [Container]
-          AddCapability=CAP_NET_BIND_SERVICE
-          ContainerName=nginx
-          Image=docker.io/library/nginx:alpine-otel
-          Pod=proxy-balancer.pod
-          Volume=/srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro,z
-          Volume=/srv/nginx/conf.d:/etc/nginx/conf.d:ro,z
-          Volume=/var/log/nginx:/var/log/nginx:z
-
-          [Service]
-          Restart=always
-
-          [Install]
-          WantedBy=proxy-balancer-pod.service
+        local: quadlet/roundcube/nginx.container
+          
 
     - path: /srv/nginx/nginx.conf
       mode: 0644

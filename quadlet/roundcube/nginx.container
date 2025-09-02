@@ -1,0 +1,17 @@
+[Unit]
+Description=Nginx container
+
+[Container]
+AddCapability=CAP_NET_BIND_SERVICE
+ContainerName=nginx
+Image=docker.io/library/nginx:alpine-otel
+Pod=proxy-balancer.pod
+Volume=/srv/nginx/nginx.conf:/etc/nginx/nginx.conf:ro,z
+Volume=/srv/nginx/conf.d:/etc/nginx/conf.d:ro,z
+Volume=/var/log/nginx:/var/log/nginx:z
+
+[Service]
+Restart=always
+
+[Install]
+WantedBy=proxy-balancer-pod.service
